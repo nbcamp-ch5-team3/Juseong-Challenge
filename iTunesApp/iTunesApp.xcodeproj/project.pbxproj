@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E5F568462DCE13FE007227A2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = E5F568452DCE13FE007227A2 /* RxCocoa */; };
+		E5F568482DCE13FE007227A2 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = E5F568472DCE13FE007227A2 /* RxRelay */; };
+		E5F5684B2DCE1408007227A2 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E5F5684A2DCE1408007227A2 /* RxSwift */; };
+		E5F569452DCE1433007227A2 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = E5F569442DCE1433007227A2 /* SnapKit */; };
+		E5F569482DCE14A5007227A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E5F569472DCE14A5007227A2 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		E51A31A62DCC9F73009043B0 /* iTunesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iTunesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -14,7 +22,7 @@
 		E51A31B82DCC9F76009043B0 /* Exceptions for "iTunesApp" folder in "iTunesApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resource/Info.plist,
 			);
 			target = E51A31A52DCC9F73009043B0 /* iTunesApp */;
 		};
@@ -36,6 +44,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5F5684B2DCE1408007227A2 /* RxSwift in Frameworks */,
+				E5F569452DCE1433007227A2 /* SnapKit in Frameworks */,
+				E5F568482DCE13FE007227A2 /* RxRelay in Frameworks */,
+				E5F568462DCE13FE007227A2 /* RxCocoa in Frameworks */,
+				E5F569482DCE14A5007227A2 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				E51A31A82DCC9F73009043B0 /* iTunesApp */,
+				E5F568492DCE1408007227A2 /* Frameworks */,
 				E51A31A72DCC9F73009043B0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +70,13 @@
 				E51A31A62DCC9F73009043B0 /* iTunesApp.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E5F568492DCE1408007227A2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +99,11 @@
 			);
 			name = iTunesApp;
 			packageProductDependencies = (
+				E5F568452DCE13FE007227A2 /* RxCocoa */,
+				E5F568472DCE13FE007227A2 /* RxRelay */,
+				E5F5684A2DCE1408007227A2 /* RxSwift */,
+				E5F569442DCE1433007227A2 /* SnapKit */,
+				E5F569472DCE14A5007227A2 /* Kingfisher */,
 			);
 			productName = iTunesApp;
 			productReference = E51A31A62DCC9F73009043B0 /* iTunesApp.app */;
@@ -107,6 +133,11 @@
 			);
 			mainGroup = E51A319D2DCC9F73009043B0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				E5F569432DCE1433007227A2 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				E5F569462DCE14A5007227A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E51A31A72DCC9F73009043B0 /* Products */;
 			projectDirPath = "";
@@ -147,12 +178,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DZAU4TTS8S;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iTunesApp/Info.plist;
+				INFOPLIST_FILE = iTunesApp/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -160,9 +191,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.juseong.iTunesApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -175,12 +210,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DZAU4TTS8S;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iTunesApp/Info.plist;
+				INFOPLIST_FILE = iTunesApp/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -188,9 +223,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.juseong.iTunesApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -337,6 +376,61 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		E5F569432DCE1433007227A2 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		E5F569462DCE14A5007227A2 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E5F568452DCE13FE007227A2 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		E5F568472DCE13FE007227A2 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		E5F5684A2DCE1408007227A2 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		E5F569442DCE1433007227A2 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F569432DCE1433007227A2 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		E5F569472DCE14A5007227A2 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5F569462DCE14A5007227A2 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E51A319E2DCC9F73009043B0 /* Project object */;
 }
