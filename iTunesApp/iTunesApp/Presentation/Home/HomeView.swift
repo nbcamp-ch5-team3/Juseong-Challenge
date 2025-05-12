@@ -98,8 +98,8 @@ class HomeView: UIView {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.8),
-            heightDimension: .fractionalWidth(0.8)
+            widthDimension: .fractionalWidth(0.9),
+            heightDimension: .fractionalWidth(0.9)
         )
         
         let group = NSCollectionLayoutGroup.horizontal(
@@ -109,7 +109,7 @@ class HomeView: UIView {
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        section.interGroupSpacing = 20
+        section.interGroupSpacing = 10
 
         return section
     }
@@ -119,24 +119,24 @@ class HomeView: UIView {
     private func defaultSeasonSectionLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(0.33)
+            heightDimension: .fractionalHeight(1.0 / 3.0)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.8),
-            heightDimension: .fractionalWidth(0.8)
+            widthDimension: .fractionalWidth(0.9),
+            heightDimension: .absolute(200)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
             repeatingSubitem: item,
             count: 3
         )
-        group.interItemSpacing = .fixed(8)
+        group.interItemSpacing = .fixed(10)
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        section.interGroupSpacing = 20
+        section.interGroupSpacing = 10
 
         return section
     }
@@ -148,19 +148,23 @@ class HomeView: UIView {
             
         }
 
-        let defaultCellRegistration = UICollectionView.CellRegistration<MusicRowCell, Item> { cell, _, item in
-            
+        let defaultCellRegistration = UICollectionView.CellRegistration<MusicRowCell, Item> { cell, indexPath, item in
+            let isGroupLast = (indexPath.item + 1) % 3 == 0
+            cell.update(with: item, isLast: isGroupLast)
         }
-        
+                
         let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(
             elementKind: UICollectionView.elementKindSectionHeader
         ) { header, _, indexPath in
-            
+            guard let section = Section(rawValue: indexPath.section) else { return }
+            header.update(with: section)
         }
 
         dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
-            let section = Section.allCases[indexPath.section]
-            
+            guard let section = Section(rawValue: indexPath.section) else {
+                return UICollectionViewCell()
+            }
+
             switch section {
             case .spring:
                 return collectionView.dequeueConfiguredReusableCell(
