@@ -31,6 +31,8 @@ class MusicRowCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
+        imageView.layer.borderColor = UIColor.separator.cgColor
+        imageView.layer.borderWidth = 0.5
         return imageView
     }()
     
@@ -50,19 +52,19 @@ class MusicRowCell: UICollectionViewCell {
     
     private let trackNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
     private let artistNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.font = .systemFont(ofSize: 14, weight: .regular)
         return label
     }()
     
     private let albumNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12, weight: .regular)
+        label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .systemGray
         return label
     }()
@@ -92,7 +94,7 @@ class MusicRowCell: UICollectionViewCell {
     
     // MARK: - Update UI
     
-    func update(with music: MusicEntity, isLast: Bool) {
+    func update(with music: MusicEntity, _ isLast: Bool) {
         albumNameLabel.text = music.collectionName
         trackNameLabel.text = music.trackName
         artistNameLabel.text = music.artistName
@@ -133,7 +135,7 @@ private extension MusicRowCell {
         }
         
         separatorView.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalTo(verticalStackView)
             $0.bottom.equalToSuperview()
             $0.height.equalTo(0.5)
         }

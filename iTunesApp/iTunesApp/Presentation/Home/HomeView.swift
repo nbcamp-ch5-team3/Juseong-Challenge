@@ -25,7 +25,7 @@ class HomeView: UIView {
             frame: .zero,
             collectionViewLayout: self.createCollectionViewLayout()
         )
-        collectionView.backgroundColor = .secondarySystemBackground
+        collectionView.backgroundColor = .systemBackground
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
@@ -99,7 +99,7 @@ class HomeView: UIView {
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
-            heightDimension: .fractionalWidth(0.9)
+            heightDimension: .fractionalWidth(0.7)
         )
         
         let group = NSCollectionLayoutGroup.horizontal(
@@ -125,7 +125,7 @@ class HomeView: UIView {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
-            heightDimension: .absolute(200)
+            heightDimension: .absolute(240)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -144,13 +144,13 @@ class HomeView: UIView {
     // MARK: - Configure Datasource
     
     private func configureDataSource() {
-        let springCellRegistration = UICollectionView.CellRegistration<MusicCardCell, Item> { cell, _, item in
-            
+        let springCellRegistration = UICollectionView.CellRegistration<MusicCardCell, Item> { cell, indexPath, item in
+            cell.update(with: item, indexPath.row + 1)
         }
 
         let defaultCellRegistration = UICollectionView.CellRegistration<MusicRowCell, Item> { cell, indexPath, item in
             let isGroupLast = (indexPath.item + 1) % 3 == 0
-            cell.update(with: item, isLast: isGroupLast)
+            cell.update(with: item, isGroupLast)
         }
                 
         let headerRegistration = UICollectionView.SupplementaryRegistration<SectionHeaderView>(
@@ -215,7 +215,7 @@ private extension HomeView {
     }
     
     func setAttributes() {
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = .systemBackground
     }
     
     func setHierarchy() {

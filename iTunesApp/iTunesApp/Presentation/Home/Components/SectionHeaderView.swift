@@ -19,7 +19,7 @@ final class SectionHeaderView: UICollectionReusableView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
+        label.font = .systemFont(ofSize: 22, weight: .bold)
         return label
     }()
     
@@ -43,7 +43,7 @@ final class SectionHeaderView: UICollectionReusableView {
         switch season {
         case .spring:
             titleLabel.text = "봄 Best"
-            descriptionLabel.text = "봄에 어울리는 음악 Best 5"
+            descriptionLabel.text = "봄에 어울리는 음악 Best 10"
         case .summer:
             titleLabel.text = "여름"
             descriptionLabel.text = "여름에 어울리는 음악"
