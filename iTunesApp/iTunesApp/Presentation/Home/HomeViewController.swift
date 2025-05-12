@@ -17,6 +17,10 @@ final class HomeViewController: UIViewController {
     private let diContaitner: DIContainer
     private let viewModel: HomeViewModel
     
+    // MARK: - UI Components
+    
+    private let homeView = HomeView()
+    
     // MARK: - Initailizer
     
     init(viewModel: HomeViewModel, diContatiner: DIContainer) {
@@ -30,6 +34,10 @@ final class HomeViewController: UIViewController {
     }
     
     // MARK: - View Life Cycle
+    
+    override func loadView() {
+        self.view = homeView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,9 +71,11 @@ private extension HomeViewController {
     func setBindings() {
         viewModel.state
             .subscribe { [weak self] state in
+                guard let self else { return }
+                
                 switch state {
                 case .homeScreenMusics(let musics):
-                    print(musics)
+                    self.homeView.applySnapshot(with: musics)
                 case .networkError(let error):
                     print(error)
                 }
