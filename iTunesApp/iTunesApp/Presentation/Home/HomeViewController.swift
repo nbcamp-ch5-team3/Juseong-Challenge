@@ -7,7 +7,7 @@
 
 import UIKit
 import RxSwift
-import RxRelay
+import RxCocoa
 
 final class HomeViewController: UIViewController {
     
@@ -70,9 +70,9 @@ private extension HomeViewController {
     
     func setBindings() {
         viewModel.state
-            .subscribe { [weak self] state in
+            .asDriver()
+            .drive { [weak self] state in
                 guard let self else { return }
-                
                 switch state {
                 case .homeScreenMusics(let musics):
                     self.homeView.applySnapshot(with: musics)

@@ -39,9 +39,8 @@ extension MusicResult {
     func toEntity() -> MusicEntity? {
         
         let formatter = ISO8601DateFormatter()
-        
+                
         guard
-            let artworkURL = URL(string: artworkUrl30),
             let trackURL = URL(string: trackViewURL),
             let preview = previewURL,
             let previewURL = URL(string: preview),
@@ -54,7 +53,7 @@ extension MusicResult {
             trackName: trackName,
             artistName: artistName,
             collectionName: collectionName ?? "",
-            artworkURL: artworkURL,
+            artworkURLString: artworkUrl30,
             releaseDate: parsedDate,
             trackURL: trackURL,
             previewURL: previewURL,

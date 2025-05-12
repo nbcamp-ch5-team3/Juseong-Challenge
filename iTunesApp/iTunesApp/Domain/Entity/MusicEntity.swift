@@ -11,7 +11,7 @@ struct MusicEntity: Hashable {
     let trackName: String
     let artistName: String
     let collectionName: String
-    let artworkURL: URL
+    let artworkURLString: String
     let releaseDate: Date
     let trackURL: URL
     let previewURL: URL
