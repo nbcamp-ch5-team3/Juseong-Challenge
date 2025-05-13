@@ -15,6 +15,8 @@ enum NetworkError: Error {
 
 final class iTunesApiService {
     
+    // MARK: - 음악 불러오기
+    
     func fetchMusics(term: String) async throws -> MusicDTO {
         var components = URLComponents(string: ITunesAPI.baseURL)
         components?.queryItems = [
@@ -41,4 +43,59 @@ final class iTunesApiService {
         
         return dto
     }
+    
+    // MARK: - 영화 불러오기
+    
+    func fetchMovies(term: String) async throws -> MovieDTO {
+        var components = URLComponents(string: ITunesAPI.baseURL)
+        components?.queryItems = [
+            URLQueryItem(name: "country", value: ITunesAPI.country),
+            URLQueryItem(name: "media", value: ITunesAPI.Movie.media),
+            URLQueryItem(name: "term", value: term)
+        ]
+        
+        guard let url = components?.url else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw NetworkError.responseError
+        }
+        
+        guard let dto = try? JSONDecoder().decode(MovieDTO.self, from: data) else {
+            throw NetworkError.decodingError
+        }
+        
+        return dto
+    }
+    
+    // MARK: - 팟캐스트 불러오기
+    
+    func fetchPodcasts(term: String) async throws -> PodcastDTO {
+        var components = URLComponents(string: ITunesAPI.baseURL)
+        components?.queryItems = [
+            URLQueryItem(name: "country", value: ITunesAPI.country),
+            URLQueryItem(name: "media", value: ITunesAPI.Podcast.media),
+            URLQueryItem(name: "term", value: term)
+        ]
+        
+        guard let url = components?.url else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw NetworkError.responseError
+        }
+        
+        guard let dto = try? JSONDecoder().decode(PodcastDTO.self, from: data) else {
+            throw NetworkError.decodingError
+        }
+        
+        return dto
+    }
+
 }
