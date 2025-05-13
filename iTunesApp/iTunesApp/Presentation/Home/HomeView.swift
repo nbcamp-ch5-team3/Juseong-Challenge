@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class HomeView: UIView {
     
@@ -110,8 +111,65 @@ class HomeView: UIView {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
         section.interGroupSpacing = 10
+        setInfinityCarousel(to: section)
 
         return section
+    }
+    
+    // MARK: - Infinity Carousel
+    
+    private func setInfinityCarousel(to section: NSCollectionLayoutSection) {
+        section.visibleItemsInvalidationHandler = { [weak self] visibleItems, offset, env in
+            guard let self = self else { return }
+                       
+            let containerWidth = env.container.contentSize.width
+            let centerX = containerWidth / 2
+            
+            let edgeRepeatCount = 3
+            let sectionIndex = Section.spring.rawValue
+            let totalItems = self.collectionView.numberOfItems(inSection: sectionIndex)
+            let realCount = totalItems - edgeRepeatCount - edgeRepeatCount
+            
+            let centerThreshold: CGFloat = 1.0
+            
+            // 화면 중앙 포인트
+            let centerPoint = CGPoint(
+                x: self.collectionView.bounds.midX,
+                y: self.collectionView.bounds.midY * 0.3
+            )
+            guard
+                let indexPath = self.collectionView.indexPathForItem(at: centerPoint),
+                indexPath.section == sectionIndex,
+                let attrs = self.collectionView.layoutAttributesForItem(at: indexPath)
+            else { return }
+            
+            // 셀이 정확히 중앙에 왔는지
+            let cellMidX = attrs.frame.midX - offset.x
+            let distanceToCenter = abs(cellMidX - centerX)
+            guard distanceToCenter < centerThreshold else { return }
+            
+            let item = indexPath.item
+            if item < edgeRepeatCount {
+                // 뒤로 무한 스크롤
+                let target = IndexPath(item: item + realCount, section: sectionIndex)
+                
+                self.collectionView.scrollToItem(
+                    at: target,
+                    at: .centeredHorizontally,
+                    animated: false
+                )
+            }
+            else if item >= edgeRepeatCount + realCount {
+                // 앞으로 무한 스크롤
+                let target = IndexPath(item: item - realCount, section: sectionIndex)
+                
+                self.collectionView.scrollToItem(
+                    at: target,
+                    at: .centeredHorizontally,
+                    animated: false
+                )
+            }
+        }
     }
     
     // MARK: - Default Season Layout
@@ -145,7 +203,7 @@ class HomeView: UIView {
     
     private func configureDataSource() {
         let springCellRegistration = UICollectionView.CellRegistration<MusicCardCell, Item> { cell, indexPath, item in
-            cell.update(with: item, indexPath.row + 1)
+            cell.update(with: item, indexPath.row)
         }
 
         let defaultCellRegistration = UICollectionView.CellRegistration<MusicRowCell, Item> { cell, indexPath, item in
@@ -193,15 +251,58 @@ class HomeView: UIView {
     
     func applySnapshot(with seasonalMusics: [SeasonalMusics]) {
         guard !seasonalMusics.isEmpty else { return }
-        
+
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(Section.allCases)
 
+        let edgeRepeatCount = 3
+        
         seasonalMusics.forEach { seasonalMusic in
-            snapshot.appendItems(seasonalMusic.musics, toSection: seasonalMusic.season)
+            let season = seasonalMusic.season
+
+            if season == .spring {
+                let original = Array(seasonalMusic.musics.prefix(10))
+
+                // 앞 3개 + 원본 10개 + 뒤 3개
+                let front = original.prefix(edgeRepeatCount).enumerated().map { i, item in
+                    var copy = item
+                    copy.id = "\(item.id)-head\(i)"
+                    return copy
+                }
+
+                let middle = original.enumerated().map { i, item in
+                    var copy = item
+                    copy.id = "\(item.id)-main\(i)"
+                    return copy
+                }
+
+                let back = original.suffix(edgeRepeatCount).enumerated().map { i, item in
+                    var copy = item
+                    copy.id = "\(item.id)-tail\(i)"
+                    return copy
+                }
+
+                let repeated = Array(back + middle + front)
+                snapshot.appendItems(repeated, toSection: .spring)
+            } else {
+                snapshot.appendItems(seasonalMusic.musics, toSection: season)
+            }
         }
 
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        dataSource?.apply(snapshot, animatingDifferences: false) { [weak self] in
+            guard let self = self else { return }
+            
+            let initialIndex = IndexPath(
+                item: edgeRepeatCount,
+                section: Section.spring.rawValue
+            )
+
+            self.collectionView.scrollToItem(
+                at: initialIndex,
+                at: .centeredHorizontally,
+                animated: false
+            )
+        }
     }
 }
 

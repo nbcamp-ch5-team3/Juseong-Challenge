@@ -8,6 +8,7 @@
 import Foundation
 
 struct MusicEntity: Hashable {
+    var id: String
     let trackName: String
     let artistName: String
     let collectionName: String

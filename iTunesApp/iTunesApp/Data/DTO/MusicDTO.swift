@@ -14,6 +14,7 @@ struct MusicDTO: Decodable {
 
 // MARK: - Result
 struct MusicResult: Decodable {
+    let trackId: Int
     let artistName: String
     let collectionName: String?
     let trackName: String
@@ -24,6 +25,7 @@ struct MusicResult: Decodable {
     let trackTimeMillis: Int?
     
     enum CodingKeys: String, CodingKey {
+        case trackId
         case artistName
         case collectionName
         case trackName
@@ -50,6 +52,7 @@ extension MusicResult {
         }
         
         return .init(
+            id: "\(trackId)",
             trackName: trackName,
             artistName: artistName,
             collectionName: collectionName ?? "",
