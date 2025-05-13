@@ -21,6 +21,8 @@ final class HomeViewController: UIViewController {
     
     private let homeView = HomeView()
     
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     // MARK: - Initailizer
     
     init(viewModel: HomeViewModel, diContatiner: DIContainer) {
@@ -51,21 +53,18 @@ final class HomeViewController: UIViewController {
 private extension HomeViewController {
     func configure() {
         setAttributes()
-        setHierarchy()
-        setConstraints()
         setBindings()
     }
     
     func setAttributes() {
-        
-    }
-    
-    func setHierarchy() {
-        
-    }
-    
-    func setConstraints() {
-        
+        navigationItem.title = "Music"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+
+        searchController.searchBar.placeholder = "영화, 팟캐스트 검색"
     }
     
     func setBindings() {
