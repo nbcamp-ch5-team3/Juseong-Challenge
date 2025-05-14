@@ -28,6 +28,8 @@ final class HomeViewController: UIViewController {
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: searchResultViewController)
         controller.searchBar.placeholder = "영화, 팟캐스트 검색"
+        controller.searchBar.scopeButtonTitles = ["Movie", "Podcast"]
+        controller.obscuresBackgroundDuringPresentation = true
         return controller
     }()
     
@@ -94,6 +96,14 @@ private extension HomeViewController {
             .bind(onNext: { [weak self] keyword in
                 guard let self = self else { return }
                 self.searchResultViewController.search(keyword: keyword)
+            })
+            .disposed(by: disposeBag)
+        
+        searchController.searchBar.rx.selectedScopeButtonIndex
+            .distinctUntilChanged()
+            .bind(onNext: { [weak self] index in
+                guard let self else { return }
+                self.searchResultViewController.updateScope(index: index)
             })
             .disposed(by: disposeBag)
     }

@@ -19,7 +19,7 @@ final class SearchResultViewController: UIViewController {
     
     // MARK: - UI Components
     
-    
+    private let searchResultView = SearchResultView()
     
     // MARK: - Initailizer
     
@@ -35,6 +35,10 @@ final class SearchResultViewController: UIViewController {
     
     // MARK: - Life Cycle
     
+    override func loadView() {
+        view = searchResultView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
@@ -45,28 +49,17 @@ final class SearchResultViewController: UIViewController {
     func search(keyword: String) {
         viewModel.action.accept(.search(keyword))
     }
+    
+    func updateScope(index: Int) {
+        viewModel.action.accept(.changeScope(index))
+    }
 }
 
 // MARK: - Configure
 
 private extension SearchResultViewController {
     func configure() {
-        setAttributes()
-        setHierarchy()
-        setConstraints()
         setBindings()
-    }
-    
-    func setAttributes() {
-        view.backgroundColor = .red
-    }
-    
-    func setHierarchy() {
-        
-    }
-    
-    func setConstraints() {
-        
     }
     
     func setBindings() {
@@ -76,8 +69,8 @@ private extension SearchResultViewController {
             .subscribe { [weak self] state in
                 guard let self else { return }
                 switch state {
-                case .searchResults(let searchResults):
-                    print(searchResults)
+                case .searchResults(let items):
+                    self.searchResultView.applySnapshot(with: items)
                 case .networkError(let error):
                     print(error)
                 }

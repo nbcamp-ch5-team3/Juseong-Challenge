@@ -14,15 +14,19 @@ final class SearchResultViewModel {
     // MARK: - State & Action
 
     enum State {
-        case searchResults(SearchResult)
+        case searchResults([SearchItem])
         case networkError(Error)
     }
     
     enum Action {
         case search(String)
+        case changeScope(Int)
     }
     
     // MARK: - Properties
+    
+    private var latestResult: SearchResult?
+    private var currentScopeIndex: Int = 0 // 0: Movie, 1: Podcast
     
     private let disposeBag = DisposeBag()
     
@@ -30,6 +34,7 @@ final class SearchResultViewModel {
     let action = PublishRelay<Action>()
     
     private let usecase: FetchSearchResultUseCase
+    
     
     // MARK: - Initailzer
     
@@ -48,6 +53,9 @@ final class SearchResultViewModel {
                 switch action {
                 case .search(let keyword):
                     Task { await self.fetchSearchResults(keyword: keyword) }
+                case .changeScope(let index):
+                    self.currentScopeIndex = index
+                    self.filterItemsForScope(index)
                 }
             }
             .disposed(by: disposeBag)
@@ -62,9 +70,23 @@ final class SearchResultViewModel {
         
         switch result {
         case .success(let searchResult):
-            self.state.accept(.searchResults(searchResult))
+            self.latestResult = searchResult
+            filterItemsForScope(self.currentScopeIndex)
         case .failure(let error):
             self.state.accept(.networkError(error))
+        }
+    }
+    
+    private func filterItemsForScope(_ scopeIndex: Int) {
+        guard let result = latestResult else { return }
+        
+        switch scopeIndex {
+        case 0:
+            state.accept(.searchResults(result.movies.map { .movie($0) }))
+        case 1:
+            state.accept(.searchResults(result.podcasts.map { .podcast($0) }))
+        default:
+            break
         }
     }
 }
