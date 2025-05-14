@@ -24,9 +24,9 @@ final class HomeViewModel {
     
     // MARK: - Properties
     
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    let state = BehaviorRelay<State>(value: .homeScreenMusics([]))
+    let state = PublishRelay<State>()
     let action = PublishRelay<Action>()
     
     private let useCase: FetchHomeMusicUseCase

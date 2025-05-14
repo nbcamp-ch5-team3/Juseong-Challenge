@@ -21,7 +21,15 @@ final class HomeViewController: UIViewController {
     
     private let homeView = HomeView()
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private lazy var searchResultViewController: SearchResultViewController = {
+        return diContainer.makeSearchResultViewController()
+    }()
+    
+    private lazy var searchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: searchResultViewController)
+        controller.searchBar.placeholder = "영화, 팟캐스트 검색"
+        return controller
+    }()
     
     // MARK: - Initailizer
     
@@ -48,7 +56,7 @@ final class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - ViewController Configure
+// MARK: - Configure
 
 private extension HomeViewController {
     func configure() {
@@ -60,17 +68,15 @@ private extension HomeViewController {
         navigationItem.title = "Music"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-
-        searchController.searchBar.placeholder = "영화, 팟캐스트 검색"
     }
     
     func setBindings() {
         viewModel.state
-            .asDriver()
-            .drive { [weak self] state in
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] state in
                 guard let self else { return }
                 switch state {
                 case .homeScreenMusics(let musics):
@@ -79,6 +85,16 @@ private extension HomeViewController {
                     print(error)
                 }
             }
+            .disposed(by: disposeBag)
+        
+        searchController.searchBar.rx.text.orEmpty
+            .throttle(.milliseconds(1_000), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .filter { !$0.isEmpty }
+            .bind(onNext: { [weak self] keyword in
+                guard let self = self else { return }
+                self.searchResultViewController.search(keyword: keyword)
+            })
             .disposed(by: disposeBag)
     }
 }
