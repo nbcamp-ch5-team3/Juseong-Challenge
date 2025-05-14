@@ -7,5 +7,5 @@
 
 struct SearchResult {
     let movies: [MovieEntity]
-    let podcast: [PodcastEntity]
+    let podcasts: [PodcastEntity]
 }

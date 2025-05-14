@@ -247,7 +247,7 @@ final class HomeView: UIView {
         }
     }
     
-    // MARK: - SnapShot
+    // MARK: - Snapshot
     
     func applySnapshot(with seasonalMusics: [SeasonalMusics]) {
         guard !seasonalMusics.isEmpty else { return }

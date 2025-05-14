@@ -23,7 +23,7 @@ final class FetchSearchResultUseCase {
             
             let searchResults: SearchResult = try await .init(
                 movies: movies,
-                podcast: podcasts
+                podcasts: podcasts
             )
             
             return .success(searchResults)
