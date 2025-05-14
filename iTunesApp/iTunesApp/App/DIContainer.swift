@@ -36,7 +36,7 @@ final class DIContainer {
     func makeHomeViewController() -> HomeViewController {
         HomeViewController(
             viewModel: makeHomeViewModel(),
-            diContatiner: self
+            diContainer: self
         )
     }
 }

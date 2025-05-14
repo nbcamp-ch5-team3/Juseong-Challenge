@@ -47,7 +47,7 @@ final class HomeViewModel {
                 
                 switch action {
                 case .viewDidLoad:
-                    Task { await self.fetchSeosonalMusics() }
+                    Task { await self.fetchSeasonalMusics() }
                 }
             }
             .disposed(by: disposeBag)
@@ -55,7 +55,7 @@ final class HomeViewModel {
     
     // MARK: - Method
     
-    private func fetchSeosonalMusics() async {
+    private func fetchSeasonalMusics() async {
         let result = await useCase.execute()
         
         switch result {

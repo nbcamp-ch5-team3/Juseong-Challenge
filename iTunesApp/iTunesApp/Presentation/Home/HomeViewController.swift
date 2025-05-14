@@ -13,8 +13,8 @@ final class HomeViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let disposebag = DisposeBag()
-    private let diContaitner: DIContainer
+    private let disposeBag = DisposeBag()
+    private let diContainer: DIContainer
     private let viewModel: HomeViewModel
     
     // MARK: - UI Components
@@ -25,9 +25,9 @@ final class HomeViewController: UIViewController {
     
     // MARK: - Initailizer
     
-    init(viewModel: HomeViewModel, diContatiner: DIContainer) {
+    init(viewModel: HomeViewModel, diContainer: DIContainer) {
         self.viewModel = viewModel
-        self.diContaitner = diContatiner
+        self.diContainer = diContainer
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -79,6 +79,6 @@ private extension HomeViewController {
                     print(error)
                 }
             }
-            .disposed(by: disposebag)
+            .disposed(by: disposeBag)
     }
 }
