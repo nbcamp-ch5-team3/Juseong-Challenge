@@ -78,11 +78,10 @@ private extension HomeViewController {
         viewModel.state
             .asObservable()
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] state in
-                guard let self else { return }
+            .subscribe(with: self) { owner, state in
                 switch state {
                 case .homeScreenMusics(let musics):
-                    self.homeView.applySnapshot(with: musics)
+                    owner.homeView.applySnapshot(with: musics)
                 case .networkError(let error):
                     print(error)
                 }
@@ -93,18 +92,16 @@ private extension HomeViewController {
             .throttle(.milliseconds(1_000), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter { !$0.isEmpty }
-            .bind(onNext: { [weak self] keyword in
-                guard let self = self else { return }
-                self.searchResultViewController.search(keyword: keyword)
-            })
+            .bind(with: self) { owner, keyword in
+                owner.searchResultViewController.search(keyword: keyword)
+            }
             .disposed(by: disposeBag)
         
         searchController.searchBar.rx.selectedScopeButtonIndex
             .distinctUntilChanged()
-            .bind(onNext: { [weak self] index in
-                guard let self else { return }
-                self.searchResultViewController.updateScope(index: index)
-            })
+            .bind(with: self) { owner, index in
+                owner.searchResultViewController.updateScope(index: index)
+            }
             .disposed(by: disposeBag)
     }
 }

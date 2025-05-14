@@ -42,12 +42,10 @@ final class HomeViewModel {
     
     private func bind() {
         action
-            .subscribe { [weak self] action in
-                guard let self else { return }
-                
+            .subscribe(with: self) { owner, action in
                 switch action {
                 case .viewDidLoad:
-                    Task { await self.fetchSeasonalMusics() }
+                    Task { await owner.fetchSeasonalMusics() }
                 }
             }
             .disposed(by: disposeBag)

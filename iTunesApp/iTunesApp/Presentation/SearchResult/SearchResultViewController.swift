@@ -66,11 +66,10 @@ private extension SearchResultViewController {
         viewModel.state
             .asObservable()
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] state in
-                guard let self else { return }
+            .subscribe(with: self) { owner, state in
                 switch state {
                 case .searchResults(let items):
-                    self.searchResultView.applySnapshot(with: items)
+                    owner.searchResultView.applySnapshot(with: items)
                 case .networkError(let error):
                     print(error)
                 }

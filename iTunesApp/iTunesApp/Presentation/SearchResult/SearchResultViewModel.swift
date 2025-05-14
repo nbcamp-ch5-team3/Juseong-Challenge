@@ -35,7 +35,6 @@ final class SearchResultViewModel {
     
     private let usecase: FetchSearchResultUseCase
     
-    
     // MARK: - Initailzer
     
     init(usecase: FetchSearchResultUseCase) {
@@ -47,15 +46,13 @@ final class SearchResultViewModel {
     
     private func bind() {
         action
-            .subscribe { [weak self] action in
-                guard let self else { return }
-                
+            .subscribe(with: self) { owner, action in
                 switch action {
                 case .search(let keyword):
-                    Task { await self.fetchSearchResults(keyword: keyword) }
+                    Task { await owner.fetchSearchResults(keyword: keyword) }
                 case .changeScope(let index):
-                    self.currentScopeIndex = index
-                    self.filterItemsForScope(index)
+                    owner.currentScopeIndex = index
+                    owner.filterItemsForScope(index)
                 }
             }
             .disposed(by: disposeBag)
