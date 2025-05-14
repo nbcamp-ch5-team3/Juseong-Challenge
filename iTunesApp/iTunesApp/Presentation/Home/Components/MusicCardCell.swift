@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class MusicCardCell: UICollectionViewCell {
+final class MusicCardCell: UICollectionViewCell {
     
     private let containerView: UIView = {
         let view = UIView()

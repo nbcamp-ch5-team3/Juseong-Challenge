@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class HomeView: UIView {
+final class HomeView: UIView {
     
     // MARK: - Section & Item
     
@@ -306,7 +306,7 @@ class HomeView: UIView {
     }
 }
 
-// MARK: - View Configure
+// MARK: - Configure
 
 private extension HomeView {
     func configure() {

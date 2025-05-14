@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class MusicRowCell: UICollectionViewCell {
+final class MusicRowCell: UICollectionViewCell {
     
     // MARK: - UI Components
     
