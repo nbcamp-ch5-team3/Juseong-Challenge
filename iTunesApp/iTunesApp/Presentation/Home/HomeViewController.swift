@@ -103,5 +103,13 @@ private extension HomeViewController {
                 owner.searchResultViewController.updateScope(index: index)
             }
             .disposed(by: disposeBag)
+        
+        homeView.itemSelected
+            .map { DetailMedia.music($0) }
+            .bind(with: self) { owner, detailMedia in
+                let detailVC = DetailViewController(detailMedia: detailMedia)
+                owner.present(detailVC, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
 }

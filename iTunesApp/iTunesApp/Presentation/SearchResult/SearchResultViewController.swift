@@ -75,5 +75,19 @@ private extension SearchResultViewController {
                 }
             }
             .disposed(by: disposeBag)
+        
+        searchResultView.itemSelected
+            .map { item -> DetailMedia in
+                switch item {
+                case .movie(let movie): return .movie(movie)
+                case .podcast(let podcast): return .podcast(podcast)
+                }
+            }
+            .bind(with: self) { owner, detailMedia in
+                let detailVC = DetailViewController(detailMedia: detailMedia)
+                owner.present(detailVC, animated: true)
+            }
+            .disposed(by: disposeBag)
+
     }
 }

@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SearchResultView: UIView {
     
@@ -16,6 +18,9 @@ final class SearchResultView: UIView {
     typealias Item = SearchItem
     
     // MARK: - Properties
+    
+    let itemSelected = PublishRelay<SearchItem>()
+    private let disposeBag = DisposeBag()
     
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     
@@ -101,6 +106,7 @@ private extension SearchResultView {
         setAttributes()
         setHierarchy()
         setConstraints()
+        setBindings()
     }
     
     func setAttributes() {
@@ -117,5 +123,14 @@ private extension SearchResultView {
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    func setBindings() {
+        collectionView.rx.itemSelected
+            .compactMap { [weak self] indexPath in
+                self?.dataSource?.itemIdentifier(for: indexPath)
+            }
+            .bind(to: itemSelected)
+            .disposed(by: disposeBag)
     }
 }

@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxRelay
 
 final class HomeView: UIView {
     
@@ -16,6 +18,9 @@ final class HomeView: UIView {
     typealias Item = MusicEntity
     
     // MARK: - Properties
+    
+    let itemSelected = PublishRelay<MusicEntity>()
+    private let disposeBag = DisposeBag()
     
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     
@@ -313,6 +318,7 @@ private extension HomeView {
         setAttributes()
         setHierarchy()
         setConstraints()
+        setBindings()
     }
     
     func setAttributes() {
@@ -329,5 +335,14 @@ private extension HomeView {
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    func setBindings() {
+        collectionView.rx.itemSelected
+            .compactMap { [weak self] indexPath in
+                self?.dataSource?.itemIdentifier(for: indexPath)
+            }
+            .bind(to: itemSelected)
+            .disposed(by: disposeBag)
     }
 }
