@@ -26,11 +26,7 @@ final class SearchResultCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let labelContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .secondarySystemBackground
-        return view
-    }()
+    private let labelContainerView = UIView()
     
     private lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(
@@ -46,7 +42,7 @@ final class SearchResultCell: UICollectionViewCell {
     
     private let trackNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textColor = .label
         return label
     }()
@@ -69,16 +65,33 @@ final class SearchResultCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Life Cycle
+    
+    override func prepareForReuse() {
+        albumImageView.image = nil
+    }
+    
     // MARK: - UI Update
     
-    private func updateAlbumImage(with artworkURLString: String) {
+    private func loadAlbumImageAndAdaptColors(from artworkURLString: String) {
         let highResURLString = artworkURLString.replacingOccurrences(of: "30x30", with: "500x500")
         guard let url = URL(string: highResURLString) else { return }
+        
+        albumImageView.kf.setImage(with: url) { [weak self] result in
+            guard let self = self else { return }
+            if case .success(let value) = result,
+               let averageColor = value.image.averageColor() {
+                self.adaptLabelColors(basedOn: averageColor)
+            }
+        }
+    }
+    
+    private func adaptLabelColors(basedOn color: UIColor) {
+        labelContainerView.backgroundColor = color
 
-        albumImageView.kf.setImage(
-            with: url,
-            options: [.transition(.fade(0.25))]
-        )
+        let textColor: UIColor = color.isDarkColor ? .white : .black
+        trackNameLabel.textColor = textColor
+        artistNameLabel.textColor = textColor
     }
     
     func update(item: SearchItem) {
@@ -86,11 +99,11 @@ final class SearchResultCell: UICollectionViewCell {
         case .movie(let movie):
             trackNameLabel.text = movie.title
             artistNameLabel.text = movie.director
-            updateAlbumImage(with: movie.artworkURL)
+            loadAlbumImageAndAdaptColors(from: movie.artworkURL)
         case .podcast(let podcast):
             trackNameLabel.text = podcast.title
             artistNameLabel.text = podcast.artistName
-            updateAlbumImage(with: podcast.artworkURL)
+            loadAlbumImageAndAdaptColors(from: podcast.artworkURL)
         }
     }
 }
@@ -124,7 +137,7 @@ private extension SearchResultCell {
         }
         
         labelStackView.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(10)
+            $0.horizontalEdges.equalToSuperview().inset(15)
             $0.centerY.equalToSuperview()
         }
         

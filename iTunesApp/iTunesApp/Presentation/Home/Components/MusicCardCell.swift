@@ -11,6 +11,8 @@ import Kingfisher
 
 final class MusicCardCell: UICollectionViewCell {
     
+    // MARK: - UI Componetns
+    
     private let containerView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
@@ -24,11 +26,7 @@ final class MusicCardCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let labelContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .secondarySystemBackground
-        return view
-    }()
+    private let labelContainerView = UIView()
     
     private let numberLabel: UILabel = {
         let label = UILabel()
@@ -65,18 +63,24 @@ final class MusicCardCell: UICollectionViewCell {
         return label
     }()
     
+    // MARK: - Initailizer
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Life Cycle
+    
     override func prepareForReuse() {
         albumImageView.image = nil
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    // MARK: - UI Update
     
     private func updateLabels(with music: MusicEntity, index: Int) {
         trackNameLabel.text = music.trackName
@@ -94,21 +98,35 @@ final class MusicCardCell: UICollectionViewCell {
         }
     }
 
-    private func updateAlbumImage(with artworkURLString: String) {
+    private func loadAlbumImageAndAdaptColors(from artworkURLString: String) {
         let highResURLString = artworkURLString.replacingOccurrences(of: "30x30", with: "500x500")
         guard let url = URL(string: highResURLString) else { return }
+        
+        albumImageView.kf.setImage(with: url) { [weak self] result in
+            guard let self = self else { return }
+            if case .success(let value) = result,
+               let averageColor = value.image.averageColor() {
+                self.adaptLabelColors(basedOn: averageColor)
+            }
+        }
+    }
+    
+    private func adaptLabelColors(basedOn color: UIColor) {
+        labelContainerView.backgroundColor = color
 
-        albumImageView.kf.setImage(
-            with: url,
-            options: [.transition(.fade(0.25))]
-        )
+        let textColor: UIColor = color.isDarkColor ? .white : .black
+        numberLabel.textColor = textColor
+        trackNameLabel.textColor = textColor
+        artistNameLabel.textColor = textColor
     }
 
     func update(with music: MusicEntity, _ index: Int) {
         updateLabels(with: music, index: index)
-        updateAlbumImage(with: music.artworkURLString)
+        loadAlbumImageAndAdaptColors(from: music.artworkURLString)
     }
 }
+
+// MARK: - Configure
 
 private extension MusicCardCell {
     func configure() {
