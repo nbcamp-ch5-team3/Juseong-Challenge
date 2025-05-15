@@ -76,6 +76,7 @@ final class SearchResultCell: UICollectionViewCell {
     override func prepareForReuse() {
         albumImageView.image = nil
         labelContainerView.backgroundColor = .systemGray
+        albumImageView.kf.cancelDownloadTask()
         [albumImageView, trackNameLabel, artistNameLabel].forEach {
             $0.hideSkeleton()
         }

@@ -78,6 +78,8 @@ final class MusicCardCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         albumImageView.image = nil
+        labelContainerView.backgroundColor = .systemGray
+        albumImageView.kf.cancelDownloadTask()
     }
     
     // MARK: - UI Update

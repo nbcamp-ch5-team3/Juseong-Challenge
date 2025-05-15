@@ -90,6 +90,7 @@ final class MusicRowCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         albumImageView.image = nil
+        albumImageView.kf.cancelDownloadTask()
     }
     
     // MARK: - Update UI
