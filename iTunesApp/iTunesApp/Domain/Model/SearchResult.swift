@@ -9,8 +9,3 @@ struct SearchResult {
     let movies: [MovieEntity]
     let podcasts: [PodcastEntity]
 }
-
-enum SearchItem: Hashable {
-    case movie(MovieEntity)
-    case podcast(PodcastEntity)
-}
