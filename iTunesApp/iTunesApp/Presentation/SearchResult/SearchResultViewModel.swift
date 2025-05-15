@@ -61,9 +61,7 @@ final class SearchResultViewModel {
     // MARK: - Method
     
     private func fetchSearchResults(keyword: String) async {
-        guard let query = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
-        
-        let result = await usecase.execute(term: query)
+        let result = await usecase.execute(term: keyword)
         
         switch result {
         case .success(let searchResult):
