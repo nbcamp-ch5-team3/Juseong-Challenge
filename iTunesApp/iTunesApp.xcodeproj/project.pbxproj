@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E5EE950D2DD5760700F5920B /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = E5EE950C2DD5760700F5920B /* SkeletonView */; };
 		E5F568462DCE13FE007227A2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = E5F568452DCE13FE007227A2 /* RxCocoa */; };
 		E5F568482DCE13FE007227A2 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = E5F568472DCE13FE007227A2 /* RxRelay */; };
 		E5F5684B2DCE1408007227A2 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E5F5684A2DCE1408007227A2 /* RxSwift */; };
@@ -64,6 +65,7 @@
 				E5F569452DCE1433007227A2 /* SnapKit in Frameworks */,
 				E5F568482DCE13FE007227A2 /* RxRelay in Frameworks */,
 				E5F568462DCE13FE007227A2 /* RxCocoa in Frameworks */,
+				E5EE950D2DD5760700F5920B /* SkeletonView in Frameworks */,
 				E5F569482DCE14A5007227A2 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -129,6 +131,7 @@
 				E5F5684A2DCE1408007227A2 /* RxSwift */,
 				E5F569442DCE1433007227A2 /* SnapKit */,
 				E5F569472DCE14A5007227A2 /* Kingfisher */,
+				E5EE950C2DD5760700F5920B /* SkeletonView */,
 			);
 			productName = iTunesApp;
 			productReference = E51A31A62DCC9F73009043B0 /* iTunesApp.app */;
@@ -189,6 +192,7 @@
 				E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				E5F569432DCE1433007227A2 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				E5F569462DCE14A5007227A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				E5EE950B2DD5760700F5920B /* XCRemoteSwiftPackageReference "SkeletonView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E51A31A72DCC9F73009043B0 /* Products */;
@@ -508,6 +512,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E5EE950B2DD5760700F5920B /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.31.0;
+			};
+		};
 		E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift";
@@ -535,6 +547,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E5EE950C2DD5760700F5920B /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5EE950B2DD5760700F5920B /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
+		};
 		E5F568452DCE13FE007227A2 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E5F568442DCE13FE007227A2 /* XCRemoteSwiftPackageReference "RxSwift" */;

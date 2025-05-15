@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SkeletonView
 import Kingfisher
 
 final class SearchResultCell: UICollectionViewCell {
@@ -26,7 +27,11 @@ final class SearchResultCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let labelContainerView = UIView()
+    private let labelContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray
+        return view
+    }()
     
     private lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(
@@ -59,6 +64,7 @@ final class SearchResultCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
+        setSkeletonableViews()
     }
     
     required init?(coder: NSCoder) {
@@ -69,7 +75,32 @@ final class SearchResultCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         albumImageView.image = nil
+        labelContainerView.backgroundColor = .systemGray
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.hideSkeleton()
+        }
     }
+    
+    // MARK: - Skeleton View
+    
+    private func setSkeletonableViews() {
+        albumImageView.isSkeletonable = true
+        trackNameLabel.isSkeletonable = true
+        artistNameLabel.isSkeletonable = true
+    }
+
+    private func showSkeleton() {
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.showAnimatedGradientSkeleton()
+        }
+    }
+
+    private func hideSkeleton() {
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.hideSkeleton(transition: .crossDissolve(0.25))
+        }
+    }
+
     
     // MARK: - UI Update
     
@@ -82,6 +113,7 @@ final class SearchResultCell: UICollectionViewCell {
             if case .success(let value) = result,
                let averageColor = value.image.averageColor() {
                 self.adaptLabelColors(basedOn: averageColor)
+                self.hideSkeleton()
             }
         }
     }
@@ -95,6 +127,8 @@ final class SearchResultCell: UICollectionViewCell {
     }
     
     func update(item: SearchItem) {
+        showSkeleton()
+        
         switch item {
         case .movie(let movie):
             trackNameLabel.text = movie.title
