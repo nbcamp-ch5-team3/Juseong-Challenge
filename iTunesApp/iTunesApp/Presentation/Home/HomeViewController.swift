@@ -89,7 +89,7 @@ private extension HomeViewController {
             .disposed(by: disposeBag)
         
         searchController.searchBar.rx.text.orEmpty
-            .throttle(.milliseconds(1_000), scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter { !$0.isEmpty }
             .bind(with: self) { owner, keyword in
