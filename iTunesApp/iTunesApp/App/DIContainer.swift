@@ -19,10 +19,25 @@ final class DIContainer {
         MusicRepositoryImpl(apiService: apiService)
     }
     
+    func makeMovieRepository() -> MovieRepository {
+        MovieRepositoryImpl(apiService: apiService)
+    }
+    
+    func makePodcastRepository() -> PodcastRepository {
+        PodcastRepositoryImpl(apiService: apiService)
+    }
+    
     // MARK: - UseCase
     
     func makeFetchHomeMusicUseCase() -> FetchHomeMusicUseCase {
         FetchHomeMusicUseCase(repository: makeMusicRepository())
+    }
+    
+    func makeFetchSearchResultUseCase() -> FetchSearchResultUseCase {
+        FetchSearchResultUseCase(
+            movieRepository: makeMovieRepository(),
+            podcastRepository: makePodcastRepository()
+        )
     }
     
     // MARK: - ViewModel
@@ -31,12 +46,23 @@ final class DIContainer {
         HomeViewModel(useCase: makeFetchHomeMusicUseCase())
     }
     
+    func makeSearchResultViewModel() -> SearchResultViewModel {
+        SearchResultViewModel(usecase: makeFetchSearchResultUseCase())
+    }
+    
     // MARK: - ViewController
     
     func makeHomeViewController() -> HomeViewController {
         HomeViewController(
             viewModel: makeHomeViewModel(),
-            diContatiner: self
+            diContainer: self
+        )
+    }
+    
+    func makeSearchResultViewController() -> SearchResultViewController {
+        SearchResultViewController(
+            viewModel: makeSearchResultViewModel(),
+            diContainer: self
         )
     }
 }

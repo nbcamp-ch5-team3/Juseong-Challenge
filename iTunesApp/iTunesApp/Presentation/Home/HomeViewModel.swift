@@ -24,9 +24,9 @@ final class HomeViewModel {
     
     // MARK: - Properties
     
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    let state = BehaviorRelay<State>(value: .homeScreenMusics([]))
+    let state = PublishRelay<State>()
     let action = PublishRelay<Action>()
     
     private let useCase: FetchHomeMusicUseCase
@@ -42,12 +42,10 @@ final class HomeViewModel {
     
     private func bind() {
         action
-            .subscribe { [weak self] action in
-                guard let self else { return }
-                
+            .subscribe(with: self) { owner, action in
                 switch action {
                 case .viewDidLoad:
-                    Task { await self.fetchSeosonalMusics() }
+                    Task { await owner.fetchSeasonalMusics() }
                 }
             }
             .disposed(by: disposeBag)
@@ -55,7 +53,7 @@ final class HomeViewModel {
     
     // MARK: - Method
     
-    private func fetchSeosonalMusics() async {
+    private func fetchSeasonalMusics() async {
         let result = await useCase.execute()
         
         switch result {

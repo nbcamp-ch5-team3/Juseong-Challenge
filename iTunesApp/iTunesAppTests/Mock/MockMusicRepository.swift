@@ -12,10 +12,11 @@ final class MockMusicRepository: MusicRepository {
     private let mockData: [Season: [MusicEntity]] = [
         .spring: [
             MusicEntity(
+                id: "1",
                 trackName: "봄 노래",
                 artistName: "벚꽃 가수",
                 collectionName: "봄 앨범",
-                artworkURL: URL(string: "https://example.com")!,
+                artworkURLString: "https://example.com",
                 releaseDate: Date(),
                 trackURL: URL(string: "https://example.com")!,
                 previewURL: URL(string: "https://example.com")!,
@@ -24,10 +25,11 @@ final class MockMusicRepository: MusicRepository {
         ],
         .summer: [
             MusicEntity(
+                id: "1",
                 trackName: "여름 노래",
                 artistName: "바다 가수",
                 collectionName: "여름 앨범",
-                artworkURL: URL(string: "https://example.com")!,
+                artworkURLString: "https://example.com",
                 releaseDate: Date(),
                 trackURL: URL(string: "https://example.com")!,
                 previewURL: URL(string: "https://example.com")!,

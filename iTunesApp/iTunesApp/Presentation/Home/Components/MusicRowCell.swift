@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class MusicRowCell: UICollectionViewCell {
+final class MusicRowCell: UICollectionViewCell {
     
     // MARK: - UI Components
     
@@ -90,6 +90,7 @@ class MusicRowCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         albumImageView.image = nil
+        albumImageView.kf.cancelDownloadTask()
     }
     
     // MARK: - Update UI

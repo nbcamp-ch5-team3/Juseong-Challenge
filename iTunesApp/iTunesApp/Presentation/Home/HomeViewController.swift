@@ -13,21 +13,31 @@ final class HomeViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let disposebag = DisposeBag()
-    private let diContaitner: DIContainer
+    private let disposeBag = DisposeBag()
+    private let diContainer: DIContainer
     private let viewModel: HomeViewModel
     
     // MARK: - UI Components
     
     private let homeView = HomeView()
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private lazy var searchResultViewController: SearchResultViewController = {
+        return diContainer.makeSearchResultViewController()
+    }()
+    
+    private lazy var searchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: searchResultViewController)
+        controller.searchBar.placeholder = "영화, 팟캐스트 검색"
+        controller.searchBar.scopeButtonTitles = ["Movie", "Podcast"]
+        controller.obscuresBackgroundDuringPresentation = true
+        return controller
+    }()
     
     // MARK: - Initailizer
     
-    init(viewModel: HomeViewModel, diContatiner: DIContainer) {
+    init(viewModel: HomeViewModel, diContainer: DIContainer) {
         self.viewModel = viewModel
-        self.diContaitner = diContatiner
+        self.diContainer = diContainer
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -48,7 +58,7 @@ final class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - ViewController Configure
+// MARK: - Configure
 
 private extension HomeViewController {
     func configure() {
@@ -60,25 +70,38 @@ private extension HomeViewController {
         navigationItem.title = "Music"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-
-        searchController.searchBar.placeholder = "영화, 팟캐스트 검색"
     }
     
     func setBindings() {
         viewModel.state
-            .asDriver()
-            .drive { [weak self] state in
-                guard let self else { return }
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .subscribe(with: self) { owner, state in
                 switch state {
                 case .homeScreenMusics(let musics):
-                    self.homeView.applySnapshot(with: musics)
+                    owner.homeView.applySnapshot(with: musics)
                 case .networkError(let error):
                     print(error)
                 }
             }
-            .disposed(by: disposebag)
+            .disposed(by: disposeBag)
+        
+        searchController.searchBar.rx.text.orEmpty
+            .throttle(.milliseconds(1_000), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .filter { !$0.isEmpty }
+            .bind(with: self) { owner, keyword in
+                owner.searchResultViewController.search(keyword: keyword)
+            }
+            .disposed(by: disposeBag)
+        
+        searchController.searchBar.rx.selectedScopeButtonIndex
+            .distinctUntilChanged()
+            .bind(with: self) { owner, index in
+                owner.searchResultViewController.updateScope(index: index)
+            }
+            .disposed(by: disposeBag)
     }
 }

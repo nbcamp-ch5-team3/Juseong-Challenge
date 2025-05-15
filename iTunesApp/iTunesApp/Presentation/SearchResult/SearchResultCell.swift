@@ -1,17 +1,18 @@
 //
-//  MusicCardCell.swift
+//  SearchResultCell.swift
 //  iTunesApp
 //
-//  Created by 박주성 on 5/12/25.
+//  Created by 박주성 on 5/14/25.
 //
 
 import UIKit
 import SnapKit
+import SkeletonView
 import Kingfisher
 
-final class MusicCardCell: UICollectionViewCell {
+final class SearchResultCell: UICollectionViewCell {
     
-    // MARK: - UI Componetns
+    // MARK: - UI Components
     
     private let containerView: UIView = {
         let view = UIView()
@@ -26,15 +27,10 @@ final class MusicCardCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let labelContainerView = UIView()
-    
-    private let numberLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 25, weight: .bold)
-        label.textColor = .label
-        label.textAlignment = .center
-        label.text = "1"
-        return label
+    private let labelContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray
+        return view
     }()
     
     private lazy var labelStackView: UIStackView = {
@@ -51,7 +47,7 @@ final class MusicCardCell: UICollectionViewCell {
     
     private let trackNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textColor = .label
         return label
     }()
@@ -68,6 +64,7 @@ final class MusicCardCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
+        setSkeletonableViews()
     }
     
     required init?(coder: NSCoder) {
@@ -80,26 +77,34 @@ final class MusicCardCell: UICollectionViewCell {
         albumImageView.image = nil
         labelContainerView.backgroundColor = .systemGray
         albumImageView.kf.cancelDownloadTask()
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.hideSkeleton()
+        }
     }
     
-    // MARK: - UI Update
+    // MARK: - Skeleton View
     
-    private func updateLabels(with music: MusicEntity, index: Int) {
-        trackNameLabel.text = music.trackName
-        artistNameLabel.text = music.artistName
-        numberLabel.text = "\(calculateDisplayIndex(from: index))"
+    private func setSkeletonableViews() {
+        albumImageView.isSkeletonable = true
+        trackNameLabel.isSkeletonable = true
+        artistNameLabel.isSkeletonable = true
     }
 
-    private func calculateDisplayIndex(from index: Int) -> Int {
-        if index < 3 {
-            return index + 8
-        } else if index > 12 {
-            return index - 12
-        } else {
-            return index - 2
+    private func showSkeleton() {
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.showAnimatedGradientSkeleton()
         }
     }
 
+    private func hideSkeleton() {
+        [albumImageView, trackNameLabel, artistNameLabel].forEach {
+            $0.hideSkeleton(transition: .crossDissolve(0.25))
+        }
+    }
+
+    
+    // MARK: - UI Update
+    
     private func loadAlbumImageAndAdaptColors(from artworkURLString: String) {
         let highResURLString = artworkURLString.replacingOccurrences(of: "30x30", with: "500x500")
         guard let url = URL(string: highResURLString) else { return }
@@ -109,6 +114,7 @@ final class MusicCardCell: UICollectionViewCell {
             if case .success(let value) = result,
                let averageColor = value.image.averageColor() {
                 self.adaptLabelColors(basedOn: averageColor)
+                self.hideSkeleton()
             }
         }
     }
@@ -117,20 +123,27 @@ final class MusicCardCell: UICollectionViewCell {
         labelContainerView.backgroundColor = color
 
         let textColor: UIColor = color.isDarkColor ? .white : .black
-        numberLabel.textColor = textColor
         trackNameLabel.textColor = textColor
         artistNameLabel.textColor = textColor
     }
-
-    func update(with music: MusicEntity, _ index: Int) {
-        updateLabels(with: music, index: index)
-        loadAlbumImageAndAdaptColors(from: music.artworkURLString)
+    
+    func update(item: SearchItem) {
+        showSkeleton()
+        
+        switch item {
+        case .movie(let movie):
+            trackNameLabel.text = movie.title
+            artistNameLabel.text = movie.director
+            loadAlbumImageAndAdaptColors(from: movie.artworkURL)
+        case .podcast(let podcast):
+            trackNameLabel.text = podcast.title
+            artistNameLabel.text = podcast.artistName
+            loadAlbumImageAndAdaptColors(from: podcast.artworkURL)
+        }
     }
 }
 
-// MARK: - Configure
-
-private extension MusicCardCell {
+private extension SearchResultCell {
     func configure() {
         setHierarchy()
         setConstraints()
@@ -144,37 +157,27 @@ private extension MusicCardCell {
             labelContainerView
         ].forEach { containerView.addSubview($0) }
         
-        [
-            numberLabel,
-            labelStackView
-        ].forEach { labelContainerView.addSubview($0) }
+        labelContainerView.addSubview(labelStackView)
     }
     
     func setConstraints() {
         containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
-        albumImageView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
+                
         labelContainerView.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.top.equalToSuperview()
             $0.height.equalTo(70)
         }
         
-        numberLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(10)
-            $0.size.equalTo(40)
+        labelStackView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(15)
             $0.centerY.equalToSuperview()
         }
         
-        labelStackView.snp.makeConstraints {
-            $0.leading.equalTo(numberLabel.snp.trailing).offset(10)
-            $0.trailing.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
+        albumImageView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
 }

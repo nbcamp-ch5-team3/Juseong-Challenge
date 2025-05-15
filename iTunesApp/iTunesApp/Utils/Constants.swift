@@ -16,4 +16,12 @@ enum ITunesAPI {
         static let entity = "musicTrack"
         static let limit = "30"
     }
+    
+    enum Movie {
+        static let media = "movie"
+    }
+    
+    enum Podcast {
+        static let media = "podcast"
+    }
 }
