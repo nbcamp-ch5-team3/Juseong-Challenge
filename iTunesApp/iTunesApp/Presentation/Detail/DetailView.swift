@@ -39,6 +39,7 @@ final class DetailView: UIView {
     private let albumImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -114,8 +115,7 @@ private extension DetailView {
         trackNameLabel.text = music.trackName
         artistNameLabel.text = music.artistName
         
-        albumImageView.hero.id = music.id
-        labelContainerView.hero.id = music.id
+        setHeroIDs(with: music.id)
     }
 
     func updateMovieView(with movie: MovieEntity) {
@@ -123,8 +123,7 @@ private extension DetailView {
         trackNameLabel.text = movie.title
         artistNameLabel.text = movie.director
         
-        albumImageView.hero.id = movie.id
-        labelContainerView.hero.id = movie.id
+        setHeroIDs(with: movie.id)
     }
 
     func updatePodcastView(with podcast: PodcastEntity) {
@@ -132,8 +131,7 @@ private extension DetailView {
         trackNameLabel.text = podcast.title
         artistNameLabel.text = podcast.artistName
         
-        albumImageView.hero.id = podcast.id
-        labelContainerView.hero.id = podcast.id
+        setHeroIDs(with: podcast.id)
     }
     
     func loadAlbumImageAndAdaptColors(from artworkURLString: String) {
@@ -156,6 +154,11 @@ private extension DetailView {
         let textColor: UIColor = color.isDarkColor ? .white : .black
         trackNameLabel.textColor = textColor
         artistNameLabel.textColor = textColor
+    }
+    
+    private func setHeroIDs(with id: String) {
+        albumImageView.hero.id = id
+        labelContainerView.hero.id = id
     }
 }
 
