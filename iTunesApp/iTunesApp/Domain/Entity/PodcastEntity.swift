@@ -8,6 +8,7 @@
 import Foundation
 
 struct PodcastEntity: Hashable {
+    let id: String
     let title: String
     let artistName: String
     let podcastURL: URL
