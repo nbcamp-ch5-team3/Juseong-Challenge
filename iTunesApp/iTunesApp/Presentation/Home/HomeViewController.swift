@@ -112,10 +112,7 @@ private extension HomeViewController {
             .bind(with: self) { owner, detailMedia in
                 let detailVC = DetailViewController(detailMedia: detailMedia)
                 detailVC.modalPresentationStyle = .fullScreen
-                detailVC.hero.modalAnimationType = .selectBy(
-                    presenting: .zoom,
-                    dismissing: .fade
-                )
+                detailVC.view.hero.modifiers = [.fade, .duration(0.2)]
                 owner.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)

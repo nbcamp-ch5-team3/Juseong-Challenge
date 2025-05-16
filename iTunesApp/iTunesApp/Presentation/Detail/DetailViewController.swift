@@ -36,6 +36,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setDelegate()
         self.hero.isEnabled = true
+        view.layer.cornerRadius = 40
+        view.clipsToBounds = true
         detailView.update(with: detailMedia)
     }
     
@@ -46,6 +48,10 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: DetailViewDelegate {
     func cancelButtonDidTap() {
+        dismiss(animated: true)
+    }
+    
+    func dismissByPullDown() {
         dismiss(animated: true)
     }
 }

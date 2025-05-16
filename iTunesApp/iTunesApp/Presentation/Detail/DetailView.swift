@@ -12,6 +12,7 @@ import Hero
 
 protocol DetailViewDelegate: AnyObject {
     func cancelButtonDidTap()
+    func dismissByPullDown()
 }
 
 final class DetailView: UIView {
@@ -33,8 +34,15 @@ final class DetailView: UIView {
         return button
     }()
     
-    private let scrollView = UIScrollView()
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.delegate = self
+        return scrollView
+    }()
     let contentView = UIView()
+    
+    private let containerView = UIView() // [albumImageView, labelContainerView]
     
     private let albumImageView: UIImageView = {
         let imageView = UIImageView()
@@ -43,7 +51,7 @@ final class DetailView: UIView {
         return imageView
     }()
     
-    private let labelContainerView: UIView = {
+    private let labelContainerView: UIView = { // [labelStackView]
         let view = UIView()
         view.backgroundColor = .systemGray
         return view
@@ -157,8 +165,7 @@ private extension DetailView {
     }
     
     private func setHeroIDs(with id: String) {
-        albumImageView.hero.id = id
-        labelContainerView.hero.id = id
+        containerView.hero.id = id
     }
 }
 
@@ -182,11 +189,12 @@ private extension DetailView {
         ].forEach { addSubview($0) }
         
         scrollView.addSubview(contentView)
+        contentView.addSubview(containerView)
         
         [
             albumImageView,
             labelContainerView
-        ].forEach { contentView.addSubview($0) }
+        ].forEach { containerView.addSubview($0) }
         
         labelContainerView.addSubview(labelStackView)
     }
@@ -209,9 +217,16 @@ private extension DetailView {
             $0.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
         }
         
+        containerView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(500)
+        }
+        
         albumImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
             $0.height.equalTo(albumImageView.snp.width)
         }
         
@@ -224,6 +239,28 @@ private extension DetailView {
         labelStackView.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview().inset(15)
             $0.centerY.equalToSuperview()
+        }
+    }
+}
+
+extension DetailView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+
+        if offsetY < 0 {
+            let pullDistance = abs(offsetY)
+            let maxPullDistance: CGFloat = 80
+            let scale = max(0.85, 1 - pullDistance / (maxPullDistance * 5))
+
+            self.transform = CGAffineTransform(scaleX: scale, y: scale)
+
+            if pullDistance > maxPullDistance {
+                delegate?.dismissByPullDown()
+            }
+        } else {
+            UIView.animate(withDuration: 0.2) {
+                self.transform = .identity
+            }
         }
     }
 }
