@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Hero
 
 final class HomeViewController: UIViewController {
     
@@ -72,6 +73,8 @@ private extension HomeViewController {
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        
+        hero.isEnabled = true
     }
     
     func setBindings() {
@@ -108,6 +111,11 @@ private extension HomeViewController {
             .map { DetailMedia.music($0) }
             .bind(with: self) { owner, detailMedia in
                 let detailVC = DetailViewController(detailMedia: detailMedia)
+                detailVC.modalPresentationStyle = .fullScreen
+                detailVC.hero.modalAnimationType = .selectBy(
+                    presenting: .zoom,
+                    dismissing: .fade
+                )
                 owner.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)

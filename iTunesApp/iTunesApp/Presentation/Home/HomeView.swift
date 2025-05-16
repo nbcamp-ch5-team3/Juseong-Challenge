@@ -209,6 +209,7 @@ final class HomeView: UIView {
     private func configureDataSource() {
         let springCellRegistration = UICollectionView.CellRegistration<MusicCardCell, Item> { cell, indexPath, item in
             cell.update(with: item, indexPath.row)
+            cell.hero.id = item.id
         }
 
         let defaultCellRegistration = UICollectionView.CellRegistration<MusicRowCell, Item> { cell, indexPath, item in

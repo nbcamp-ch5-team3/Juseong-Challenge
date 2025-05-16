@@ -1,6 +1,15 @@
 {
-  "originHash" : "217ea674590fc44e5e75b5f0ced99b0a43fe1286b0d6dcc0f26fdca847d94bfc",
+  "originHash" : "de59f3b25c989ee16c330e374158e740b584f11372214bd3e3b9998d55753b55",
   "pins" : [
+    {
+      "identity" : "hero?tab=readme-ov-file",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HeroTransitions/Hero?tab=readme-ov-file",
+      "state" : {
+        "revision" : "670b81ed3d95f7183bbc009d0ec67c71506557b5",
+        "version" : "1.6.4"
+      }
+    },
     {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",

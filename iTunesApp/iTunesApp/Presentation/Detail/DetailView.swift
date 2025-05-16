@@ -8,10 +8,30 @@
 import UIKit
 import SnapKit
 import Kingfisher
+import Hero
+
+protocol DetailViewDelegate: AnyObject {
+    func cancelButtonDidTap()
+}
 
 final class DetailView: UIView {
     
+    // MARK: - Properties
+     
+     weak var delegate: DetailViewDelegate?
+    
     // MARK: - UI Components
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        button.tintColor = .systemGray
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
+        return button
+    }()
     
     private let scrollView = UIScrollView()
     let contentView = UIView()
@@ -43,14 +63,14 @@ final class DetailView: UIView {
     private let trackNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.textColor = .label
+        label.textColor = .black
         return label
     }()
     
     private let artistNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .systemGray
+        label.textColor = .black
         return label
     }()
     
@@ -63,6 +83,13 @@ final class DetailView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Action
+    
+    @objc
+    private func cancelButtonDidTap() {
+        delegate?.cancelButtonDidTap()
     }
     
     // MARK: - Update Swtich
@@ -86,6 +113,9 @@ private extension DetailView {
         loadAlbumImageAndAdaptColors(from: music.artworkURLString)
         trackNameLabel.text = music.trackName
         artistNameLabel.text = music.artistName
+        
+        albumImageView.hero.id = music.id
+        labelContainerView.hero.id = music.id
     }
 
     func updateMovieView(with movie: MovieEntity) {
@@ -133,11 +163,15 @@ private extension DetailView {
     }
     
     func setAttributes() {
-        backgroundColor = .white
+        backgroundColor = .secondarySystemBackground
     }
     
     func setHierarchy() {
-        addSubview(scrollView)
+        [
+            scrollView,
+            cancelButton
+        ].forEach { addSubview($0) }
+        
         scrollView.addSubview(contentView)
         
         [
@@ -149,6 +183,12 @@ private extension DetailView {
     }
     
     func setConstraints() {
+        cancelButton.snp.makeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.size.equalTo(36)
+        }
+        
         scrollView.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.horizontalEdges.equalToSuperview()

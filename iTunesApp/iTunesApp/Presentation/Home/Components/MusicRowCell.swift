@@ -110,6 +110,8 @@ final class MusicRowCell: UICollectionViewCell {
                 .transition(.fade(0.25))
             ]
         )
+        
+        albumImageView.hero.id = music.id
     }
 }
 

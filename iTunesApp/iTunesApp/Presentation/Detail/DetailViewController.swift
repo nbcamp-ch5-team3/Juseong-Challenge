@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Hero
 
 class DetailViewController: UIViewController {
     
@@ -33,6 +34,18 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setDelegate()
+        self.hero.isEnabled = true
         detailView.update(with: detailMedia)
+    }
+    
+    private func setDelegate() {
+        detailView.delegate = self
+    }
+}
+
+extension DetailViewController: DetailViewDelegate {
+    func cancelButtonDidTap() {
+        dismiss(animated: true)
     }
 }
