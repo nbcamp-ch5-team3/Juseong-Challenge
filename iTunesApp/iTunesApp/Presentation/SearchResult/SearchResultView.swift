@@ -80,6 +80,13 @@ final class SearchResultView: UIView {
     private func configureDataSource() {
         let cellRegistration = UICollectionView.CellRegistration<SearchResultCell, Item>  { cell, indexPath, item in
             cell.update(item: item)
+            
+            switch item {
+            case .movie(let movie):
+                cell.hero.id = movie.id
+            case .podcast(let podcast):
+                cell.hero.id = podcast.id
+            }
         }
         
         dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in

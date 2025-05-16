@@ -122,12 +122,18 @@ private extension DetailView {
         loadAlbumImageAndAdaptColors(from: movie.artworkURL)
         trackNameLabel.text = movie.title
         artistNameLabel.text = movie.director
+        
+        albumImageView.hero.id = movie.id
+        labelContainerView.hero.id = movie.id
     }
 
     func updatePodcastView(with podcast: PodcastEntity) {
         loadAlbumImageAndAdaptColors(from: podcast.artworkURL)
         trackNameLabel.text = podcast.title
         artistNameLabel.text = podcast.artistName
+        
+        albumImageView.hero.id = podcast.id
+        labelContainerView.hero.id = podcast.id
     }
     
     func loadAlbumImageAndAdaptColors(from artworkURLString: String) {
