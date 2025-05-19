@@ -33,6 +33,7 @@ final class PodcastRepositoryImpl: PodcastRepository {
         }
 
         return PodcastEntity(
+            id: "\(dto.trackId)",
             title: dto.trackName,
             artistName: dto.artistName,
             podcastURL: podcastURL,

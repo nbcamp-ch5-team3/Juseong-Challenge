@@ -59,7 +59,12 @@ final class SearchResultViewController: UIViewController {
 
 private extension SearchResultViewController {
     func configure() {
+        setAttributes()
         setBindings()
+    }
+    
+    func setAttributes() {
+        hero.isEnabled = true
     }
     
     func setBindings() {
@@ -73,6 +78,21 @@ private extension SearchResultViewController {
                 case .networkError(let error):
                     print(error)
                 }
+            }
+            .disposed(by: disposeBag)
+        
+        searchResultView.itemSelected
+            .map { item -> DetailMedia in
+                switch item {
+                case .movie(let movie): return .movie(movie)
+                case .podcast(let podcast): return .podcast(podcast)
+                }
+            }
+            .bind(with: self) { owner, detailMedia in
+                let detailVC = DetailViewController(detailMedia: detailMedia)
+                detailVC.modalPresentationStyle = .fullScreen
+                detailVC.view.hero.modifiers = [.fade, .duration(0.2)]
+                owner.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)
     }

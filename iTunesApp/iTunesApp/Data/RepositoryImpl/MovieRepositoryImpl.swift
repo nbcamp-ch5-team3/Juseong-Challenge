@@ -34,6 +34,7 @@ final class MovieRepositoryImpl: MovieRepository {
             }
 
             return MovieEntity(
+                id: "\(dto.trackId)",
                 title: dto.trackName,
                 director: dto.artistName,
                 movieURL: movieURL,

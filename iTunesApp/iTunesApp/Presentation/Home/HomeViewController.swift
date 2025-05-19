@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Hero
 
 final class HomeViewController: UIViewController {
     
@@ -72,6 +73,8 @@ private extension HomeViewController {
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        
+        hero.isEnabled = true
     }
     
     func setBindings() {
@@ -89,7 +92,7 @@ private extension HomeViewController {
             .disposed(by: disposeBag)
         
         searchController.searchBar.rx.text.orEmpty
-            .throttle(.milliseconds(1_000), scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter { !$0.isEmpty }
             .bind(with: self) { owner, keyword in
@@ -101,6 +104,16 @@ private extension HomeViewController {
             .distinctUntilChanged()
             .bind(with: self) { owner, index in
                 owner.searchResultViewController.updateScope(index: index)
+            }
+            .disposed(by: disposeBag)
+        
+        homeView.itemSelected
+            .map { DetailMedia.music($0) }
+            .bind(with: self) { owner, detailMedia in
+                let detailVC = DetailViewController(detailMedia: detailMedia)
+                detailVC.modalPresentationStyle = .fullScreen
+                detailVC.view.hero.modifiers = [.fade, .duration(0.2)]
+                owner.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)
     }

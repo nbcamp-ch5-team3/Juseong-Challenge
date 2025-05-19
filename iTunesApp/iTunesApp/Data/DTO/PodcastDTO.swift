@@ -12,6 +12,7 @@ struct PodcastDTO: Decodable {
 }
 
 struct PodcastResult: Decodable {
+    let trackId: Int
     let artistName: String
     let trackName: String
     let trackViewURL: String
@@ -22,6 +23,7 @@ struct PodcastResult: Decodable {
     let genres: [String]
     
     enum CodingKeys: String, CodingKey {
+        case trackId
         case artistName
         case trackName
         case trackViewURL = "trackViewUrl"

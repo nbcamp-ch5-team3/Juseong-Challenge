@@ -12,6 +12,7 @@ struct MovieDTO: Decodable {
 }
 
 struct MovieResult: Decodable {
+    let trackId: Int
     let artistName: String
     let trackName: String
     let trackViewURL: String
@@ -24,6 +25,7 @@ struct MovieResult: Decodable {
     let longDescription: String
 
     enum CodingKeys: String, CodingKey {
+        case trackId
         case artistName
         case trackName
         case trackViewURL = "trackViewUrl"
