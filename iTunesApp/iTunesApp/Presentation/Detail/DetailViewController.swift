@@ -54,4 +54,19 @@ extension DetailViewController: DetailViewDelegate {
     func dismissByPullDown() {
         dismiss(animated: true)
     }
+    
+    func shareButtonDidTap() {
+        let activityItems: URL
+        
+        switch detailMedia {
+        case .music(let music):
+            activityItems = music.trackURL
+        case .movie(let movie):
+            activityItems = movie.movieURL
+        case .podcast(let podcast):
+            activityItems = podcast.podcastURL
+        }
+        let activityViewController = UIActivityViewController(activityItems: [activityItems], applicationActivities: nil)
+        present(activityViewController, animated: true)
+    }
 }

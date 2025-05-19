@@ -13,13 +13,14 @@ import Hero
 protocol DetailViewDelegate: AnyObject {
     func cancelButtonDidTap()
     func dismissByPullDown()
+    func shareButtonDidTap()
 }
 
 final class DetailView: UIView {
     
     // MARK: - Properties
-     
-     weak var delegate: DetailViewDelegate?
+    
+    weak var delegate: DetailViewDelegate?
     
     // MARK: - UI Components
     
@@ -83,6 +84,20 @@ final class DetailView: UIView {
         return label
     }()
     
+    private lazy var shareButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(systemName: "square.and.arrow.up")
+        button.setImage(image, for: .normal)
+        button.tintColor = .darkGray
+        button.contentMode = .scaleAspectFill
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        button.addTarget(self, action: #selector(shareButtonDidTap), for: .touchUpInside)
+        return button
+    }()
+
     // MARK: - Initailizer
     
     override init(frame: CGRect) {
@@ -99,6 +114,11 @@ final class DetailView: UIView {
     @objc
     private func cancelButtonDidTap() {
         delegate?.cancelButtonDidTap()
+    }
+    
+    @objc
+    private func shareButtonDidTap() {
+        delegate?.shareButtonDidTap()
     }
     
     // MARK: - Update Swtich
@@ -169,6 +189,30 @@ private extension DetailView {
     }
 }
 
+// MARK: - UIScrollView Delegate
+
+extension DetailView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+
+        if offsetY < 0 {
+            let pullDistance = abs(offsetY)
+            let maxPullDistance: CGFloat = 80
+            let scale = max(0.85, 1 - pullDistance / (maxPullDistance * 5))
+
+            self.transform = CGAffineTransform(scaleX: scale, y: scale)
+
+            if pullDistance > maxPullDistance {
+                delegate?.dismissByPullDown()
+            }
+        } else {
+            UIView.animate(withDuration: 0.2) {
+                self.transform = .identity
+            }
+        }
+    }
+}
+
 // MARK: - Configure
 
 private extension DetailView {
@@ -196,7 +240,10 @@ private extension DetailView {
             labelContainerView
         ].forEach { containerView.addSubview($0) }
         
-        labelContainerView.addSubview(labelStackView)
+        [
+            labelStackView,
+            shareButton
+        ].forEach { labelContainerView.addSubview($0) }
     }
     
     func setConstraints() {
@@ -237,30 +284,15 @@ private extension DetailView {
         }
         
         labelStackView.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(15)
+            $0.leading.equalToSuperview().inset(15)
             $0.centerY.equalToSuperview()
         }
-    }
-}
-
-extension DetailView: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-
-        if offsetY < 0 {
-            let pullDistance = abs(offsetY)
-            let maxPullDistance: CGFloat = 80
-            let scale = max(0.85, 1 - pullDistance / (maxPullDistance * 5))
-
-            self.transform = CGAffineTransform(scaleX: scale, y: scale)
-
-            if pullDistance > maxPullDistance {
-                delegate?.dismissByPullDown()
-            }
-        } else {
-            UIView.animate(withDuration: 0.2) {
-                self.transform = .identity
-            }
+        
+        shareButton.snp.makeConstraints {
+            $0.leading.equalTo(labelStackView.snp.trailing).offset(10)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.centerY.equalToSuperview()
+            $0.size.equalTo(30)
         }
     }
 }
