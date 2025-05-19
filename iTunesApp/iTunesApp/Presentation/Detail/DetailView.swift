@@ -6,21 +6,25 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 import SnapKit
 import Kingfisher
 import Hero
 
-protocol DetailViewDelegate: AnyObject {
-    func cancelButtonDidTap()
-    func dismissByPullDown()
-    func shareButtonDidTap()
-}
-
 final class DetailView: UIView {
+    
+    // MARK: - Action
+    
+    enum Action {
+        case dismiss
+        case share
+    }
     
     // MARK: - Properties
     
-    weak var delegate: DetailViewDelegate?
+    private let disposeBag = DisposeBag()
+    let action = PublishRelay<Action>()
     
     // MARK: - UI Components
     
@@ -31,7 +35,6 @@ final class DetailView: UIView {
         button.imageView?.contentMode = .scaleAspectFit
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
-        button.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
         return button
     }()
     
@@ -94,10 +97,9 @@ final class DetailView: UIView {
         button.contentVerticalAlignment = .fill
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
-        button.addTarget(self, action: #selector(shareButtonDidTap), for: .touchUpInside)
         return button
     }()
-
+    
     // MARK: - Initailizer
     
     override init(frame: CGRect) {
@@ -107,18 +109,6 @@ final class DetailView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - Action
-    
-    @objc
-    private func cancelButtonDidTap() {
-        delegate?.cancelButtonDidTap()
-    }
-    
-    @objc
-    private func shareButtonDidTap() {
-        delegate?.shareButtonDidTap()
     }
     
     // MARK: - Update Swtich
@@ -145,7 +135,7 @@ private extension DetailView {
         
         setHeroIDs(with: music.id)
     }
-
+    
     func updateMovieView(with movie: MovieEntity) {
         loadAlbumImageAndAdaptColors(from: movie.artworkURL)
         trackNameLabel.text = movie.title
@@ -153,7 +143,7 @@ private extension DetailView {
         
         setHeroIDs(with: movie.id)
     }
-
+    
     func updatePodcastView(with podcast: PodcastEntity) {
         loadAlbumImageAndAdaptColors(from: podcast.artworkURL)
         trackNameLabel.text = podcast.title
@@ -178,7 +168,7 @@ private extension DetailView {
     
     func adaptLabelColors(basedOn color: UIColor) {
         labelContainerView.backgroundColor = color
-
+        
         let textColor: UIColor = color.isDarkColor ? .white : .black
         trackNameLabel.textColor = textColor
         artistNameLabel.textColor = textColor
@@ -194,16 +184,16 @@ private extension DetailView {
 extension DetailView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-
+        
         if offsetY < 0 {
             let pullDistance = abs(offsetY)
             let maxPullDistance: CGFloat = 80
             let scale = max(0.85, 1 - pullDistance / (maxPullDistance * 5))
-
+            
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
-
+            
             if pullDistance > maxPullDistance {
-                delegate?.dismissByPullDown()
+                action.accept(.dismiss)
             }
         } else {
             UIView.animate(withDuration: 0.2) {
@@ -220,10 +210,13 @@ private extension DetailView {
         setAttributes()
         setHierarchy()
         setConstraints()
+        setBindings()
     }
     
     func setAttributes() {
         backgroundColor = .secondarySystemBackground
+        layer.cornerRadius = 40
+        clipsToBounds = true
     }
     
     func setHierarchy() {
@@ -294,5 +287,19 @@ private extension DetailView {
             $0.centerY.equalToSuperview()
             $0.size.equalTo(30)
         }
+    }
+    
+    func setBindings() {
+        cancelButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.action.accept(.dismiss)
+            }
+            .disposed(by: disposeBag)
+        
+        shareButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.action.accept(.share)
+            }
+            .disposed(by: disposeBag)
     }
 }

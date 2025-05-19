@@ -7,6 +7,7 @@
 
 import UIKit
 import Hero
+import RxSwift
 
 class DetailViewController: UIViewController {
     
@@ -14,6 +15,7 @@ class DetailViewController: UIViewController {
     
     private let detailView = DetailView()
     private let detailMedia: DetailMedia
+    private let disposeBag = DisposeBag()
     
     // MARK: - Initailizer
     
@@ -34,28 +36,11 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setDelegate()
-        self.hero.isEnabled = true
-        view.layer.cornerRadius = 40
-        view.clipsToBounds = true
+        configure()
         detailView.update(with: detailMedia)
     }
     
-    private func setDelegate() {
-        detailView.delegate = self
-    }
-}
-
-extension DetailViewController: DetailViewDelegate {
-    func cancelButtonDidTap() {
-        dismiss(animated: true)
-    }
-    
-    func dismissByPullDown() {
-        dismiss(animated: true)
-    }
-    
-    func shareButtonDidTap() {
+    private func showActivityView() {
         let activityItems: URL
         
         switch detailMedia {
@@ -68,5 +53,32 @@ extension DetailViewController: DetailViewDelegate {
         }
         let activityViewController = UIActivityViewController(activityItems: [activityItems], applicationActivities: nil)
         present(activityViewController, animated: true)
+    }
+}
+
+// MARK: - Configure
+
+private extension DetailViewController {
+    func configure() {
+        setAttributes()
+        setBindings()
+    }
+    
+    func setAttributes() {
+        self.hero.isEnabled = true
+    }
+    
+    func setBindings() {
+        detailView.action
+            .asSignal()
+            .emit(with: self) { owner, action in
+                switch action {
+                case .dismiss:
+                    owner.dismiss(animated: true)
+                case .share:
+                    owner.showActivityView()
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }
